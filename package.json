@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "dependencies": {
     "bcrypt": "^3.0.2",
+    "bluebird-queue": "0.0.8",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "dotenv": "^6.1.0",
@@ -16,6 +17,7 @@
     "jsonwebtoken": "^8.4.0",
     "juice": "^5.0.1",
     "knex": "^0.15.2",
+    "line-by-line": "^0.1.6",
     "ms": "^2.1.1",
     "nodemailer": "^4.7.0",
     "objection": "^1.4.0",
