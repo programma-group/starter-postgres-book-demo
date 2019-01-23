@@ -1,11 +1,8 @@
 require('dotenv').config();
 const fs = require('fs');
-const zlib = require('zlib');
 const LineByLineReader = require('line-by-line');
-const { transaction } = require('objection');
 const Book = require('./../models/book');
 const { init } = require('../db');
-const Queue = require('bluebird-queue');
 
 
 const mapToReview = line => ({
@@ -28,17 +25,8 @@ const mapToBook = line => ({
 });
 
 init().then(async () => {
-  // const lineReader = readline.createInterface({
-  //   input: fs.createReadStream('/home/asdrubalivan/Downloads/meta_Books.json.gz').pipe(zlib.createGunzip()),
-  // });
+  let seedData = [];
   const lineReader = new LineByLineReader(fs.createReadStream('/home/asdrubalivan/Downloads/meta_Books.json'));
-  const myQ = new Queue({
-    concurrency: 5,
-    onComplete: () => {
-      lineReader.resume();
-    },
-  });
-
   const insertBook = (line) => {
     let parsed;
     try {
@@ -46,10 +34,19 @@ init().then(async () => {
     } catch (err) {
       console.log(line);
       console.log(err);
-      process.exit(1);
     }
     const reviewData = mapToBook(parsed);
-    return myQ.addNow(() => Book.query().insert(reviewData));
+    seedData.push(reviewData);
+  };
+  const flushSeedData = (finishProcessOnInsert = false) => {
+    const copy = [...seedData];
+    Book.query().insert(copy).catch(console.log).then(() => {
+      if (finishProcessOnInsert) {
+        process.exit(0);
+      }
+    });
+    seedData = [];
+    lineReader.resume();
   };
   let n = 0;
   lineReader.on('line', (line) => {
@@ -61,10 +58,12 @@ init().then(async () => {
     }
     if (n % 1000 === 0) {
       lineReader.pause();
+      flushSeedData();
     }
   });
 
   lineReader.on('end', async () => {
     console.log('Finished');
+    flushSeedData(true);
   });
 });
