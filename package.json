@@ -52,7 +52,9 @@
     "migrate": "knex migrate:latest --knexfile=src/knexfile.js",
     "rollback-migrations": "knex migrate:rollback --knexfile=src/knexfile.js",
     "eslint": "eslint . --ext .js",
-    "generate-dotenv": "./src/utils/generateEnvFiles.sh"
+    "generate-dotenv": "./src/utils/generateEnvFiles.sh",
+    "seed-books": "node src/scripts/seed.js",
+    "seed-reviews": "node src/scripts/seed_reviews.js"
   },
   "repository": {
     "type": "git",

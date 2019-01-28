@@ -3,6 +3,7 @@ const fs = require('fs');
 const LineByLineReader = require('line-by-line');
 const Book = require('./../models/book');
 const { init } = require('../db');
+const { getArgv } = require('../utils/console');
 
 const mapToBook = line => ({
   asin: line.asin,
@@ -13,12 +14,12 @@ const mapToBook = line => ({
 
 init().then(async () => {
   let seedData = [];
-  const lineReader = new LineByLineReader(fs.createReadStream('/home/asdrubalivan/Downloads/meta_Books.json'));
+  const lineReader = new LineByLineReader(fs.createReadStream(getArgv(2)));
   const insertBook = (line) => {
     let parsed;
     try {
       // eslint-disable-next-line no-eval
-      eval(`parsed = ${line}`); // This is not a great thing, we ought to solve this
+      eval(`parsed = ${line}`);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);

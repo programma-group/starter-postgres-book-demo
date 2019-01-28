@@ -3,6 +3,7 @@ const fs = require('fs');
 const LineByLineReader = require('line-by-line');
 const Book = require('./../models/book');
 const { init } = require('../db');
+const { getArgv } = require('../utils/console');
 
 const mapToReview = line => ({
   reviewerID: line.reviewerID || '',
@@ -33,7 +34,7 @@ const insertReviews = (valuesArray) => {
 
 init().then(async () => {
   let seedData = [];
-  const lineReader = new LineByLineReader(fs.createReadStream('/home/asdrubalivan/Downloads/reviews_Books_5.json'));
+  const lineReader = new LineByLineReader(fs.createReadStream(getArgv(2)));
   const insertReview = (line) => {
     let parsed;
     try {
