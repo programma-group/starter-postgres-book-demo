@@ -4,19 +4,6 @@ const LineByLineReader = require('line-by-line');
 const Book = require('./../models/book');
 const { init } = require('../db');
 
-
-const mapToReview = line => ({
-  reviewerID: line.reviewerID,
-  asin: line.asin,
-  summary: line.summary,
-  reviewerName: line.reviewerName,
-  reviewText: line.reviewText,
-  overall: line.overall,
-  unixBookTime: (new Date(line.unixReviewTime * 1000)).toISOString(),
-  helpfulCount: line.helpful[0],
-  totalHelpfulCount: line.helpful[1],
-});
-
 const mapToBook = line => ({
   asin: line.asin,
   imUrl: line.imUrl,
@@ -30,9 +17,10 @@ init().then(async () => {
   const insertBook = (line) => {
     let parsed;
     try {
+      // eslint-disable-next-line no-eval
       eval(`parsed = ${line}`); // This is not a great thing, we ought to solve this
     } catch (err) {
-      console.log(line);
+      // eslint-disable-next-line no-console
       console.log(err);
     }
     const reviewData = mapToBook(parsed);
@@ -40,6 +28,7 @@ init().then(async () => {
   };
   const flushSeedData = (finishProcessOnInsert = false) => {
     const copy = [...seedData];
+    // eslint-disable-next-line no-console
     Book.query().insert(copy).catch(console.log).then(() => {
       if (finishProcessOnInsert) {
         process.exit(0);
@@ -63,6 +52,7 @@ init().then(async () => {
   });
 
   lineReader.on('end', async () => {
+    // eslint-disable-next-line no-console
     console.log('Finished');
     flushSeedData(true);
   });
