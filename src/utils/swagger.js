@@ -6,7 +6,7 @@ const swaggerDefinition = {
     version: '0.0.1',
     description: 'This is the REST Documentation for Programma group PostgreSQL starter',
   },
-  host: `${process.env.URL}:${process.env.PORT}`,
+  host: `${process.env.URL}`,
   securityDefinitions: {
     Bearer: {
       type: 'apiKey',
