@@ -29,19 +29,28 @@ init().then(async () => {
   };
   const flushSeedData = (finishProcessOnInsert = false) => {
     const copy = [...seedData];
+    console.log('Inserting', copy.length, finishProcessOnInsert);
     // eslint-disable-next-line no-console
-    Book.query().insert(copy).catch(console.log).then(() => {
-      if (finishProcessOnInsert) {
-        process.exit(0);
-      }
-    });
+    Book.query().insert(copy)
+      .then(() => {
+        lineReader.resume();
+      })
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.log(err);
+        process.exit(1);
+      })
+      .then(() => {
+        if (finishProcessOnInsert) {
+          process.exit(0);
+        }
+      });
     seedData = [];
-    lineReader.resume();
   };
   let n = 0;
   lineReader.on('line', (line) => {
     n += 1;
-    if (n > 1000000) {
+    if (n > 1000) {
       lineReader.close();
     } else {
       insertBook(line);

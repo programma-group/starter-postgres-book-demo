@@ -72,12 +72,12 @@ init().then(async () => {
   let n = 0;
   lineReader.on('line', (line) => {
     n += 1;
-    if (n > 1000000) {
+    if (n > 8000) {
       lineReader.close();
     } else {
       insertReview(line);
     }
-    if (n % 10000 === 0) {
+    if (n % 1000 === 0) {
       // eslint-disable-next-line no-console
       console.log(n);
       lineReader.pause();
