@@ -18,6 +18,7 @@
     "juice": "^5.0.1",
     "knex": "^0.15.2",
     "line-by-line": "^0.1.6",
+    "lodash.clamp": "^4.0.3",
     "ms": "^2.1.1",
     "nodemailer": "^4.7.0",
     "objection": "^1.4.0",

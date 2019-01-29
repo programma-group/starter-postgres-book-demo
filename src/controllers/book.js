@@ -1,7 +1,9 @@
+const clamp = require('lodash.clamp');
 const Book = require('../models/book');
 
 const searchBooks = async (req, res) => {
   const { description, title } = req.query;
+  const limit = clamp(req.query.limit || 100, 1, 100);
   const data = await Book
     .query()
     .skipUndefined()
@@ -11,7 +13,7 @@ const searchBooks = async (req, res) => {
     .where('description', 'ilike', description ? `%${description}%` : undefined)
     .where('title', 'ilike', title ? `%${title}%` : undefined)
     .eager(req.query.eager)
-    .limit(100);
+    .limit(limit);
   return res.send({
     ok: true,
     data,
