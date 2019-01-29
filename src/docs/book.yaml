@@ -45,6 +45,94 @@ paths:
             enum: [reviews]
           description: Optionally allows eager loads of reviews for each book by adding a "eager=reviews" param
           example: reviews
+        - in: query
+          name: orderId
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Optionally orders results by id. It can order by ascending order ("asc") or descending order ("desc")
+        - in: query
+          name: orderAsin
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Optionally orders results by asin. It can order by ascending order ("asc") or descending order ("desc")
+        - in: query
+          name: orderTitle
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Optionally orders results by title. It can order by ascending order ("asc") or descending order ("desc")
       responses:
         200:
-          description: A response with book details
+          description: A response with book details and reviews if "eager=reviews" is on the query params
+          example:
+            ok: true
+            data:
+              - id: 4230767
+                asin: "0001048791"
+                description: null,
+                imUrl: "http://ecx.images-amazon.com/images/I/51MKP0T4DBL.jpg"
+                title: "The Crucible: Performed by Stuart Pankin, Jerome Dempsey &amp; Cast"
+                reviews:
+                  - id: 1
+                    reviewerID: 1
+                    reviewerName: "Roger Gonzalez"
+                    reviewText: "This is a good book, Dempsey does a great work..."
+                    overall: 4
+                    unixReviewTime: "2009-12-24T00:00:00.000Z"
+                    helpfulCount: 2
+                    totalHelpfulCount: 3
+                    bookId: 4230767
+                    summary: Great book
+definitions:
+  Book:
+    type: object
+    example:
+      id: 1
+    properties:
+      id:
+        type: string
+      description:
+        type: string
+      asin:
+        type: string
+        description: Amazon ID for a book
+      imUrl:
+        type: string
+        format: url
+        description: URL for the book's cover
+      title:
+        type: string
+      reviews:
+        type: array
+        optional: true
+        description: Optional array of reviews
+        items:
+          $ref: '#/definitions/Review'
+  Review:
+    type: object
+    properties:
+      id:
+        type: string
+      reviewerID:
+        type: string
+      reviewerName:
+        type: string
+      reviewText:
+        type: string
+      summary:
+        type: string
+      overall:
+        type: integer
+      unixReviewTime:
+        type: date
+      helpfulCount:
+        type: integer
+        description: Helpful votes for the review
+      totalHelpfulCount:
+        type: integer
+        description: Total helpful + unhelpful votes for the review
+      bookId:
+        type: integer
+        description: Book Id of the review
