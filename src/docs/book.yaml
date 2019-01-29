@@ -1,0 +1,50 @@
+paths:
+  /book:
+    get:
+      tags:
+        - Get books
+      summary: Gets a list of books, optionally with its reviews
+      produces:
+      - application/json
+      parameters:
+        - in: query
+          name: description
+          schema:
+            type: string
+          description: Value to be searched within the description's field. Internally adds a "description ilike %{value}%" condition in the books query
+          example: example
+        - in: query
+          name: title
+          schema:
+            type: string
+          description: Value to be searched within the title's book's field. Internally adds a "title ilike %{value}%" condition in the books query
+          example: example
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          description: The maximum number of items to return
+          example: 10
+        - in: query
+          name: id
+          schema:
+            type: integer
+          description: "Value used to search books by id. It adds a \"where id = ?\" condition to the books search (Example: 1)"
+          examples: 1
+        - in: query
+          name: asin
+          schema:
+            type: string
+          description: "Value used to search books by asin. It adds a \"where asin = ?\" condition to the books search (Example: \"0X00A1A0\")"
+        - in: query
+          name: eager
+          schema:
+            type: string
+            enum: [reviews]
+          description: Optionally allows eager loads of reviews for each book by adding a "eager=reviews" param
+          example: reviews
+      responses:
+        200:
+          description: A response with book details
