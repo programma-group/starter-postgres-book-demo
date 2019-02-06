@@ -1,35 +1,38 @@
 const clamp = require('lodash.clamp');
 const Book = require('../models/book');
 
-const searchBooks = async (req, res) => {
+const getQuery = (base, req, isCount = false) => {
   const {
-    description,
-    title,
     orderId,
     orderAsin,
     orderTitle,
   } = req.query;
-  const limit = clamp(req.query.limit || 100, 1, 100);
-  const queryPromise = Book
-    .query()
+  const condition = base
     .skipUndefined()
     .allowEager('reviews')
     .where('id', req.query.id)
     .where('asin', req.query.asin)
-    .where('description', 'ilike', description ? `%${description}%` : undefined)
-    .where('title', 'ilike', title ? `%${title}%` : undefined)
-    .eager(req.query.eager)
-    .limit(limit);
+    .where('description', 'ilike', req.query.description ? `%${req.query.description}%` : undefined)
+    .where('title', 'ilike', req.query.title ? `%${req.query.title}%` : undefined)
+    .eager(req.query.eager);
   if (orderId === 'asc' || orderId === 'desc') {
-    queryPromise.orderBy('id', orderId);
+    condition.orderBy('id', orderId);
   }
   if (orderAsin === 'asc' || orderAsin === 'desc') {
-    queryPromise.orderBy('asin', orderAsin);
+    condition.orderBy('asin', orderAsin);
   }
   if (orderTitle === 'asc' || orderTitle === 'desc') {
-    queryPromise.orderBy('title', orderTitle);
+    condition.orderBy('title', orderTitle);
   }
-  const data = await queryPromise;
+  if (isCount) {
+    const limit = clamp(req.query.limit || 100, 1, 100);
+    condition.limit(limit);
+  }
+  return condition;
+};
+
+const searchBooks = async (req, res) => {
+  const data = await getQuery(Book.query(), req);
   return res.send({
     ok: true,
     data,
