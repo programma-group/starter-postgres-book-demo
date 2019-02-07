@@ -50,7 +50,7 @@ init().then(async () => {
   let n = 0;
   lineReader.on('line', (line) => {
     n += 1;
-    if (n > 1000) {
+    if (n > 10000) {
       lineReader.close();
     } else {
       insertBook(line);
