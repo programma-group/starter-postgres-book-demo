@@ -32,8 +32,10 @@ const searchBooks = async (req, res) => {
   const data = await condition;
   return res.send({
     ok: true,
-    data: data.results,
-    total: Number(data.total),
+    data: {
+      books: data.results,
+      count: data.total,
+    },
   });
 };
 

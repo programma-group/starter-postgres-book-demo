@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   explorer: true,
 }));
-app.use('/book', bookRouter);
+app.use('/books', bookRouter);
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', (req, res) => {
